@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrangeHRM Automation - Scenarios & Source Code Model</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff7b1c;
+            --primary-hover: #e5680c;
+            --primary-light: #fff3e8;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-amber: #f59e0b;
+            --code-bg: #0b1120;
+            --radius-lg: 14px;
+            --radius-md: 8px;
+            --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0b1120 0%, #0f172a 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header section */
+        header {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--radius-lg);
+            padding: 28px 32px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-badge {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ff7b1c 0%, #ff5722 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 24px;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(255, 123, 28, 0.4);
+        }
+
+        .title-block h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .title-block p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .badges-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--dark-border);
+        }
+
+        .pill-badge.playwright { color: #2ecc71; border-color: rgba(46, 204, 113, 0.3); }
+        .pill-badge.ts { color: #3b82f6; border-color: rgba(59, 130, 246, 0.3); }
+        .pill-badge.pom { color: #ff7b1c; border-color: rgba(255, 123, 28, 0.3); }
+
+        /* Metrics bar */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metric-card .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .metric-card.accent {
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Navigation Modules Tab Bar */
+        .module-nav-container {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--radius-lg);
+            padding: 10px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .module-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: thin;
+        }
+
+        .module-tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .module-tabs::-webkit-scrollbar-thumb {
+            background: var(--dark-border);
+            border-radius: 4px;
+        }
+
+        .module-tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .module-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .module-tab-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, #ea580c 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(255, 123, 28, 0.35);
+        }
+
+        .module-tab-btn .badge {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        /* Main Content Layout */
+        .content-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid var(--dark-border);
+            padding-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--code-bg);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--dark-border);
+        }
+
+        .sub-tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn.active {
+            background: var(--dark-card);
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--dark-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        th {
+            background: #131d2f;
+            color: var(--text-muted);
+            padding: 12px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11.5px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            color: #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tag-scenario {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .tag-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .tag-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .code-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 2px 7px;
+            background: var(--code-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            color: #fca5a5;
+            word-break: break-all;
+        }
+
+        /* Code block container */
+        .code-container {
+            background: var(--code-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: #131c2e;
+            border-bottom: 1px solid var(--dark-border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border: 1px solid var(--dark-border);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        pre {
+            padding: 18px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #e2e8f0;
+            line-height: 1.6;
+            margin: 0;
+            max-height: 520px;
+        }
+
+        /* Run commands bar */
+        .command-bar {
+            background: #111a2d;
+            border: 1px solid var(--dark-border);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .command-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .command-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #38bdf8;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--dark-border);
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo-group">
+            <div class="logo-badge">O</div>
+            <div class="title-block">
+                <h1>OrangeHRM Automation Suite & HTML Model</h1>
+                <p>12 Modules Coverage &bull; Playwright &bull; TypeScript &bull; Page Object Model (POM)</p>
+            </div>
+        </div>
+        <div class="badges-group">
+            <span class="pill-badge playwright">✔ Playwright Test</span>
+            <span class="pill-badge ts">✔ TypeScript</span>
+            <span class="pill-badge pom">✔ Beginner POM Pattern</span>
+        </div>
+    </header>
+
+    <!-- Metrics Grid -->
+    <div class="metrics-grid">
+        <div class="metric-card accent">
+            <span class="label">Total Modules</span>
+            <span class="value">12</span>
+        </div>
+        <div class="metric-card">
+            <span class="label">Test Scenarios</span>
+            <span class="value">42 Automated</span>
+        </div>
+        <div class="metric-card">
+            <span class="label">Architecture</span>
+            <span class="value">POM + TestData</span>
+        </div>
+        <div class="metric-card">
+            <span class="label">Target Portal</span>
+            <span class="value">OrangeHRM 5.x</span>
+        </div>
+    </div>
+
+    <!-- 12 Modules Navigation Tab Bar -->
+    <div class="module-nav-container">
+        <div class="module-tabs" id="moduleTabs">
+            <button class="module-tab-btn active" onclick="switchModule('admin')">1. Admin <span class="badge">4 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('pim')">2. PIM <span class="badge">5 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('leave')">3. Leave <span class="badge">5 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('time')">4. Time <span class="badge">5 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('recruitment')">5. Recruitment <span class="badge">5 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('myinfo')">6. My Info <span class="badge">5 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('performance')">7. Performance <span class="badge">1 Test</span></button>
+            <button class="module-tab-btn" onclick="switchModule('dashboard')">8. Dashboard <span class="badge">4 Tests</span></button>
+            <button class="module-tab-btn" onclick="switchModule('directory')">9. Directory <span class="badge">1 Test</span></button>
+            <button class="module-tab-btn" onclick="switchModule('maintenance')">10. Maintenance <span class="badge">1 Test</span></button>
+            <button class="module-tab-btn" onclick="switchModule('claim')">11. Claim <span class="badge">1 Test</span></button>
+            <button class="module-tab-btn" onclick="switchModule('buzz')">12. Buzz <span class="badge">1 Test</span></button>
+        </div>
+    </div>
+
+    <!-- Dynamic Content Area -->
+    <div class="content-card">
+        <div class="section-header">
+            <h2 id="currentModuleTitle">Admin Module - Scenarios & HTML Model</h2>
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" onclick="switchView('scenarios')">📋 Test Scenarios</button>
+                <button class="sub-tab-btn" onclick="switchView('htmlmodel')">🔍 HTML & Locators Model</button>
+                <button class="sub-tab-btn" onclick="switchView('src')">💻 Source Code (POM & Spec)</button>
+            </div>
+        </div>
+
+        <!-- View 1: Test Scenarios -->
+        <div id="viewScenarios">
+            <div class="table-responsive">
+                <table id="scenariosTable">
+                    <!-- Populated via JS based on selected module -->
+                </table>
+            </div>
+        </div>
+
+        <!-- View 2: HTML & Locators Model -->
+        <div id="viewHtmlModel" style="display: none;">
+            <div class="table-responsive">
+                <table id="locatorsTable">
+                    <!-- Populated via JS based on selected module -->
+                </table>
+            </div>
+        </div>
+
+        <!-- View 3: Source Code -->
+        <div id="viewSrc" style="display: none;">
+            <div class="sub-tabs" style="margin-bottom: 12px; display: inline-flex;">
+                <button class="sub-tab-btn active" id="btnCodePom" onclick="switchCodeTab('pom')">Page Object (.ts)</button>
+                <button class="sub-tab-btn" id="btnCodeSpec" onclick="switchCodeTab('spec')">Test Spec (.spec.ts)</button>
+                <button class="sub-tab-btn" id="btnCodeData" onclick="switchCodeTab('data')">TestData (.ts)</button>
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span id="codeFilePath">Pages/adminpage.ts</span>
+                    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+                </div>
+                <pre><code id="codeContent"></code></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Terminal Runner Commands -->
+    <div class="command-bar">
+        <div class="command-info">
+            <span style="font-weight: 600;">⚡ Quick Execution Commands:</span>
+            <span class="command-text">npx playwright test tests/navigation.spec.ts --headed</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <span class="command-text">npx playwright test tests/admin.spec.ts --headed</span>
+            <span class="command-text">npx playwright show-report</span>
+        </div>
+    </div>
+
+    <footer>
+        OrangeHRM Playwright Test Automation Framework &bull; Designed in Beginner Style Page Object Model (POM)
+    </footer>
+
+</div>
+
+<script>
+    // Module Data Store
+    const modulesData = {
+        admin: {
+            title: "1. Admin Module - User Management",
+            url: "/admin/viewAdminModule",
+            header: "Admin",
+            scenarios: [
+                {
+                    id: "SC-ADM-01",
+                    title: "Admin Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login as Admin<br>2. Click 'Admin' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /admin/viewAdminModule and header displays 'Admin'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-ADM-02",
+                    title: "Search User by Username",
+                    type: "Functional",
+                    steps: "1. Enter 'Admin' in username input<br>2. Click Search button<br>3. Verify records table",
+                    expected: "Matching system user record 'Admin' is listed in table",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-ADM-03",
+                    title: "Reset Search Filters",
+                    type: "Functional",
+                    steps: "1. Enter 'Admin' in username input<br>2. Click Reset button<br>3. Verify input field",
+                    expected: "Username input field value is cleared to empty",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-ADM-04",
+                    title: "Click Add User Button",
+                    type: "Navigation",
+                    steps: "1. Click '+ Add' button on Admin page<br>2. Verify Add User form",
+                    expected: "URL contains /admin/saveSystemUser and Add User form appears",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Admin Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Admin")', xpath: "//span[text()='Admin']/parent::a", purpose: "Navigates to Admin module" },
+                { name: "Page Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[contains(@class,'oxd-topbar-header-breadcrumb-module')]", purpose: "Displays 'Admin' module title" },
+                { name: "Search Username Input", tag: "<input>", selector: ".oxd-form-row input.oxd-input", xpath: "//label[text()='Username']/parent::div/following-sibling::div/input", purpose: "Filter users by username" },
+                { name: "Search Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Executes user search" },
+                { name: "Reset Button", tag: "<button>", selector: 'button[type="reset"]', xpath: "//button[@type='reset']", purpose: "Clears filter inputs" },
+                { name: "Add User Button", tag: "<button>", selector: 'button:has-text("Add")', xpath: "//button[contains(.,'Add')]", purpose: "Opens Add User form" },
+                { name: "Records Table Rows", tag: "<div>", selector: ".oxd-table-body .oxd-table-card", xpath: "//div[@class='oxd-table-card']", purpose: "Rows in system users list" }
+            ],
+            pomFile: "Pages/adminpage.ts",
+            specFile: "tests/admin.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class AdminPage {
+    constructor(private page: Page) {}
+
+    // Admin Page Locators
+    searchUsernameInput = TestData.adminSearchUsernameInput;
+    searchButton = TestData.adminSearchButton;
+    resetButton = TestData.adminResetButton;
+    addButton = TestData.adminAddButton;
+    tableRecords = TestData.adminTableRecords;
+
+    async fillSearchUsername(username: string) {
+        await this.page.locator(this.searchUsernameInput).first().fill(username);
+    }
+
+    async clickSearch() {
+        await this.page.locator(this.searchButton).click();
+    }
+
+    async clickReset() {
+        await this.page.locator(this.resetButton).click();
+    }
+
+    async clickAddUser() {
+        await this.page.locator(this.addButton).click();
+    }
+
+    async searchUser(username: string) {
+        await this.fillSearchUsername(username);
+        await this.clickSearch();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { NavigationPage } from '../Pages/navigationpage';
+import { AdminPage } from '../Pages/adminpage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM Admin Page Functional Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url);
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+
+        let nav = new NavigationPage(page);
+        await nav.clickAdmin();
+        await expect(page).toHaveURL(new RegExp(TestData.adminUrl));
+    });
+
+    test('1. Search system user by username', async ({ page }) => {
+        let admin = new AdminPage(page);
+        await admin.searchUser(TestData.adminSearchUsernameValue);
+        await expect(page.locator(admin.tableRecords).first()).toBeVisible();
+        await expect(page.locator(admin.tableRecords).first()).toContainText(TestData.adminSearchUsernameValue);
+    });
+
+    test('2. Reset search filters in Admin page', async ({ page }) => {
+        let admin = new AdminPage(page);
+        await admin.fillSearchUsername(TestData.adminSearchUsernameValue);
+        await admin.clickReset();
+        await expect(page.locator(admin.searchUsernameInput).first()).toHaveValue('');
+    });
+
+    test('3. Verify Add User button navigates to Add User form', async ({ page }) => {
+        let admin = new AdminPage(page);
+        await admin.clickAddUser();
+        await expect(page).toHaveURL(/.*saveSystemUser/);
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.adminHeaderText);
+    });
+});`
+        },
+        pim: {
+            title: "2. PIM Module - Personnel Information Management",
+            url: "/pim/viewPimModule",
+            header: "PIM",
+            scenarios: [
+                {
+                    id: "SC-PIM-01",
+                    title: "PIM Module Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login with valid credentials<br>2. Click 'PIM' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /pim/viewPimModule and header displays 'PIM'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-PIM-02",
+                    title: "Search Employee by Employee ID",
+                    type: "Functional",
+                    steps: "1. Enter Employee ID in search filter<br>2. Click Search button<br>3. Verify matching record in table",
+                    expected: "Matching employee record is displayed in the results table",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-PIM-03",
+                    title: "Reset Employee Search Filters",
+                    type: "Functional",
+                    steps: "1. Enter Employee ID in search filter<br>2. Click Reset button<br>3. Verify input field",
+                    expected: "Employee ID search input is cleared back to empty",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-PIM-04",
+                    title: "Navigate to Add Employee Tab",
+                    type: "Navigation",
+                    steps: "1. Click 'Add Employee' tab<br>2. Verify URL contains /pim/addEmployee and fields are displayed",
+                    expected: "Add Employee form with First Name, Last Name, and Save button is visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-PIM-05",
+                    title: "Required Validation on Empty Submission",
+                    type: "Validation",
+                    steps: "1. Go to Add Employee tab<br>2. Leave mandatory fields blank and click Save<br>3. Verify error messages",
+                    expected: "'Required' validation message appears under First Name and Last Name",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar PIM Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("PIM")', xpath: "//span[text()='PIM']/parent::a", purpose: "Navigates to PIM module" },
+                { name: "PIM Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='PIM']", purpose: "Displays 'PIM' module header" },
+                { name: "Employee List Tab", tag: "<a>", selector: 'a:has-text("Employee List")', xpath: "//a[text()='Employee List']", purpose: "Switches to Employee List view" },
+                { name: "Add Employee Tab", tag: "<a>", selector: 'a:has-text("Add Employee")', xpath: "//a[text()='Add Employee']", purpose: "Switches to Add Employee form" },
+                { name: "Employee ID Search Input", tag: "<input>", selector: ".oxd-form-row .oxd-grid-item:nth-child(2) input", xpath: "//label[text()='Employee Id']/parent::div/following-sibling::div/input", purpose: "Filter employees by ID" },
+                { name: "Search Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Executes employee search" },
+                { name: "Reset Button", tag: "<button>", selector: 'button[type="reset"]', xpath: "//button[@type='reset']", purpose: "Clears filter inputs" },
+                { name: "First Name Input", tag: "<input>", selector: 'input[name="firstName"]', xpath: "//input[@name='firstName']", purpose: "Enter employee first name" },
+                { name: "Last Name Input", tag: "<input>", selector: 'input[name="lastName"]', xpath: "//input[@name='lastName']", purpose: "Enter employee last name" },
+                { name: "Save Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Saves new employee record" },
+                { name: "Required Validation Error", tag: "<span>", selector: ".oxd-input-field-error-message", xpath: "//span[contains(@class,'oxd-input-field-error-message')]", purpose: "Displays 'Required' field error" }
+            ],
+            pomFile: "Pages/pimpage.ts",
+            specFile: "tests/pim.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class PimPage {
+    constructor(private page: Page) {}
+
+    tabEmployeeList = TestData.pimTabEmployeeList;
+    tabAddEmployee = TestData.pimTabAddEmployee;
+    searchEmployeeNameInput = TestData.pimSearchEmployeeNameInput;
+    searchEmployeeIdInput = TestData.pimSearchEmployeeIdInput;
+    searchButton = TestData.pimSearchButton;
+    resetButton = TestData.pimResetButton;
+    tableRecords = TestData.pimTableRecords;
+
+    firstNameInput = TestData.pimFirstNameInput;
+    middleNameInput = TestData.pimMiddleNameInput;
+    lastNameInput = TestData.pimLastNameInput;
+    saveButton = TestData.pimSaveButton;
+    requiredError = TestData.pimRequiredError;
+
+    async clickEmployeeListTab() {
+        await this.page.locator(this.tabEmployeeList).click();
+    }
+
+    async clickAddEmployeeTab() {
+        await this.page.locator(this.tabAddEmployee).click();
+    }
+
+    async fillSearchEmployeeId(id: string) {
+        await this.page.locator(this.searchEmployeeIdInput).fill(id);
+    }
+
+    async clickSearch() {
+        await this.page.locator(this.searchButton).click();
+    }
+
+    async clickReset() {
+        await this.page.locator(this.resetButton).click();
+    }
+
+    async searchEmployeeById(id: string) {
+        await this.fillSearchEmployeeId(id);
+        await this.clickSearch();
+    }
+
+    async fillAddEmployeeForm(firstName: string, lastName: string, middleName: string = '') {
+        await this.page.locator(this.firstNameInput).fill(firstName);
+        if (middleName) {
+            await this.page.locator(this.middleNameInput).fill(middleName);
+        }
+        await this.page.locator(this.lastNameInput).fill(lastName);
+    }
+
+    async clickSave() {
+        await this.page.locator(this.saveButton).click();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { NavigationPage } from '../Pages/navigationpage';
+import { PimPage } from '../Pages/pimpage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM PIM Module Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url);
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+
+        let nav = new NavigationPage(page);
+        await nav.clickPIM();
+        await expect(page).toHaveURL(new RegExp(TestData.pimUrl));
+    });
+
+    test('1. Verify PIM Module Navigation and Header', async ({ page }) => {
+        let pim = new PimPage(page);
+        await expect(page).toHaveURL(new RegExp(TestData.pimUrl));
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.pimHeaderText);
+        await expect(page.locator(pim.tabEmployeeList)).toBeVisible();
+    });
+
+    test('2. Search employee by Employee ID', async ({ page }) => {
+        let pim = new PimPage(page);
+        await pim.searchEmployeeById(TestData.pimSearchSampleId);
+        await expect(page.locator(pim.tableRecords).first()).toBeVisible();
+        await expect(page.locator(pim.tableRecords).first()).toContainText(TestData.pimSearchSampleId);
+    });
+
+    test('3. Reset employee search filters in PIM page', async ({ page }) => {
+        let pim = new PimPage(page);
+        await pim.fillSearchEmployeeId(TestData.pimSearchSampleId);
+        await pim.clickReset();
+        await expect(page.locator(pim.searchEmployeeIdInput)).toHaveValue('');
+    });
+
+    test('4. Navigate to Add Employee tab and verify form fields', async ({ page }) => {
+        let pim = new PimPage(page);
+        await pim.clickAddEmployeeTab();
+        await expect(page).toHaveURL(/.*pim\\/addEmployee/);
+        await expect(page.locator(pim.firstNameInput)).toBeVisible();
+        await expect(page.locator(pim.lastNameInput)).toBeVisible();
+        await expect(page.locator(pim.saveButton)).toBeVisible();
+    });
+
+    test('5. Verify Required validation message on empty Add Employee submission', async ({ page }) => {
+        let pim = new PimPage(page);
+        await pim.clickAddEmployeeTab();
+        await expect(page).toHaveURL(/.*pim\\/addEmployee/);
+        await pim.clickSave();
+        await expect(page.locator(pim.requiredError).first()).toBeVisible();
+        await expect(page.locator(pim.requiredError).first()).toContainText(TestData.requiredErrorMessage);
+    });
+});`
+        },
+        leave: {
+            title: "3. Leave Module - Leave Management",
+            url: "/leave/viewLeaveModule",
+            header: "Leave",
+            scenarios: [
+                {
+                    id: "SC-LEV-01",
+                    title: "Leave Module Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login with valid credentials<br>2. Click 'Leave' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /leave/viewLeaveModule and header displays 'Leave'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-LEV-02",
+                    title: "Navigate to Apply Leave Tab & Form Fields",
+                    type: "Navigation",
+                    steps: "1. Click 'Apply' tab in Leave sub-navigation<br>2. Verify URL contains /leave/applyLeave and inputs appear",
+                    expected: "Apply Leave form with Leave Type select and Apply button is visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-LEV-03",
+                    title: "Required Validation on Empty Apply Leave",
+                    type: "Validation",
+                    steps: "1. Navigate to Apply Leave tab<br>2. Click 'Apply' button without filling fields<br>3. Verify error messages",
+                    expected: "'Required' validation message appears under mandatory fields",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-LEV-04",
+                    title: "Navigate to My Leave Tab & List View",
+                    type: "Navigation",
+                    steps: "1. Click 'My Leave' tab in Leave sub-navigation<br>2. Verify URL contains /leave/viewMyLeaveList",
+                    expected: "My Leave list and search filter are visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-LEV-05",
+                    title: "Reset Search Filters on Leave List",
+                    type: "Functional",
+                    steps: "1. Enter date in From Date filter<br>2. Click Reset button<br>3. Verify filters reset",
+                    expected: "Filters are reset and search button remains active",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Leave Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Leave")', xpath: "//span[text()='Leave']/parent::a", purpose: "Navigates to Leave module" },
+                { name: "Leave Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Leave']", purpose: "Displays 'Leave' module header" },
+                { name: "Apply Tab", tag: "<a>", selector: 'a:has-text("Apply")', xpath: "//a[text()='Apply']", purpose: "Opens Apply Leave form" },
+                { name: "My Leave Tab", tag: "<a>", selector: 'a:has-text("My Leave")', xpath: "//a[text()='My Leave']", purpose: "Opens personal leave history" },
+                { name: "Leave List Tab", tag: "<a>", selector: 'a:has-text("Leave List")', xpath: "//a[text()='Leave List']", purpose: "Opens organization leave list" },
+                { name: "From Date Input", tag: "<input>", selector: ".oxd-form-row .oxd-date-input:first-child input", xpath: "//label[text()='From Date']/parent::div/following-sibling::div//input", purpose: "Filter leaves starting date" },
+                { name: "To Date Input", tag: "<input>", selector: ".oxd-form-row .oxd-date-input:last-child input", xpath: "//label[text()='To Date']/parent::div/following-sibling::div//input", purpose: "Filter leaves ending date" },
+                { name: "Search Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Filter leave records" },
+                { name: "Reset Button", tag: "<button>", selector: 'button[type="reset"]', xpath: "//button[@type='reset']", purpose: "Clear leave filters" },
+                { name: "Leave Type Select", tag: "<div>", selector: ".oxd-select-text", xpath: "//div[contains(@class,'oxd-select-text')]", purpose: "Select leave category" },
+                { name: "Apply Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Submits leave application" }
+            ],
+            pomFile: "Pages/leavepage.ts",
+            specFile: "tests/leave.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class LeavePage {
+    constructor(private page: Page) {}
+
+    tabApply = TestData.leaveTabApply;
+    tabMyLeave = TestData.leaveTabMyLeave;
+    tabLeaveList = TestData.leaveTabLeaveList;
+    fromDateInput = TestData.leaveFromDateInput;
+    toDateInput = TestData.leaveToDateInput;
+    searchButton = TestData.leaveSearchButton;
+    resetButton = TestData.leaveResetButton;
+    leaveTypeSelect = TestData.leaveTypeSelect;
+    commentsTextarea = TestData.leaveCommentsTextarea;
+    applyButton = TestData.leaveApplyButton;
+    requiredError = TestData.leaveRequiredError;
+
+    async clickApplyTab() {
+        await this.page.locator(this.tabApply).click();
+    }
+
+    async clickMyLeaveTab() {
+        await this.page.locator(this.tabMyLeave).click();
+    }
+
+    async clickLeaveListTab() {
+        await this.page.locator(this.tabLeaveList).click();
+    }
+
+    async fillFromDate(date: string) {
+        await this.page.locator(this.fromDateInput).fill(date);
+    }
+
+    async clickSearch() {
+        await this.page.locator(this.searchButton).click();
+    }
+
+    async clickReset() {
+        await this.page.locator(this.resetButton).click();
+    }
+
+    async clickApply() {
+        await this.page.locator(this.applyButton).click();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { NavigationPage } from '../Pages/navigationpage';
+import { LeavePage } from '../Pages/leavepage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM Leave Module Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url);
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+
+        let nav = new NavigationPage(page);
+        await nav.clickLeave();
+        await expect(page).toHaveURL(new RegExp(TestData.leaveUrl));
+    });
+
+    test('1. Verify Leave Module Navigation and Header', async ({ page }) => {
+        let leave = new LeavePage(page);
+        await expect(page).toHaveURL(new RegExp(TestData.leaveUrl));
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.leaveHeaderText);
+        await expect(page.locator(leave.tabApply)).toBeVisible();
+    });
+
+    test('2. Navigate to Apply Leave tab and verify form fields', async ({ page }) => {
+        let leave = new LeavePage(page);
+        await leave.clickApplyTab();
+        await expect(page).toHaveURL(/.*leave\\/applyLeave/);
+        await expect(page.locator(leave.leaveTypeSelect)).toBeVisible();
+        await expect(page.locator(leave.applyButton)).toBeVisible();
+    });
+
+    test('3. Verify Required validation on empty Apply Leave submission', async ({ page }) => {
+        let leave = new LeavePage(page);
+        await leave.clickApplyTab();
+        await expect(page).toHaveURL(/.*leave\\/applyLeave/);
+        await leave.clickApply();
+        await expect(page.locator(leave.requiredError).first()).toBeVisible();
+        await expect(page.locator(leave.requiredError).first()).toContainText(TestData.requiredErrorMessage);
+    });
+
+    test('4. Navigate to My Leave tab and verify My Leave list', async ({ page }) => {
+        let leave = new LeavePage(page);
+        await leave.clickMyLeaveTab();
+        await expect(page).toHaveURL(/.*leave\\/viewMyLeaveList/);
+        await expect(page.locator(leave.searchButton)).toBeVisible();
+    });
+
+    test('5. Reset search filters on Leave List', async ({ page }) => {
+        let leave = new LeavePage(page);
+        await leave.fillFromDate('2024-01-01');
+        await leave.clickReset();
+        await expect(page.locator(leave.searchButton)).toBeVisible();
+    });
+});`
+        },
+        time: {
+            title: "4. Time Module - Timesheets & Attendance",
+            url: "/time/viewTimeModule",
+            header: "Time",
+            scenarios: [
+                {
+                    id: "SC-TIM-01",
+                    title: "Time Module Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login with valid credentials<br>2. Click 'Time' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /time/viewTimeModule and header displays 'Time'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-TIM-02",
+                    title: "Employee Timesheets Search Filter",
+                    type: "Functional",
+                    steps: "1. Open Time module<br>2. Verify Employee Name search input and View button",
+                    expected: "Timesheet employee search input and View button are visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-TIM-03",
+                    title: "Navigate to Attendance Punch In/Out",
+                    type: "Navigation",
+                    steps: "1. Click 'Attendance' dropdown<br>2. Select 'Punch In/Out'<br>3. Verify card",
+                    expected: "URL contains /attendance/punchIn and Punch In card is visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-TIM-04",
+                    title: "Navigate to Project Info Customers",
+                    type: "Navigation",
+                    steps: "1. Click 'Project Info' dropdown<br>2. Select 'Customers'<br>3. Verify page",
+                    expected: "URL contains /admin/viewCustomers and Customers list header is shown",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-TIM-05",
+                    title: "Required Validation on Empty Employee Timesheet View",
+                    type: "Validation",
+                    steps: "1. In Employee Timesheets view, leave employee name empty<br>2. Click 'View' button<br>3. Verify error",
+                    expected: "'Required' error message is displayed under employee name",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Time Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Time")', xpath: "//span[text()='Time']/parent::a", purpose: "Navigates to Time module" },
+                { name: "Time Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Time']", purpose: "Displays 'Time' module header" },
+                { name: "Timesheets Tab", tag: "<span>", selector: 'span.oxd-topbar-body-nav-tab-item:has-text("Timesheets")', xpath: "//span[contains(.,'Timesheets')]", purpose: "Timesheets dropdown menu" },
+                { name: "Attendance Tab", tag: "<span>", selector: 'span.oxd-topbar-body-nav-tab-item:has-text("Attendance")', xpath: "//span[contains(.,'Attendance')]", purpose: "Attendance dropdown menu" },
+                { name: "Punch In/Out Submenu", tag: "<a>", selector: 'a:has-text("Punch In/Out")', xpath: "//a[text()='Punch In/Out']", purpose: "Punch in/out screen" },
+                { name: "Project Info Tab", tag: "<span>", selector: 'span.oxd-topbar-body-nav-tab-item:has-text("Project Info")', xpath: "//span[contains(.,'Project Info')]", purpose: "Project management dropdown" },
+                { name: "Customers Submenu", tag: "<a>", selector: 'a:has-text("Customers")', xpath: "//a[text()='Customers']", purpose: "Customers list" },
+                { name: "Employee Name Input", tag: "<input>", selector: 'input[placeholder="Type for hints..."]', xpath: "//label[text()='Employee Name']/parent::div/following-sibling::div//input", purpose: "Search employee timesheet" },
+                { name: "View Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Views employee timesheet" }
+            ],
+            pomFile: "Pages/timepage.ts",
+            specFile: "tests/time.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class TimePage {
+    constructor(private page: Page) {}
+
+    tabTimesheets = TestData.timeTabTimesheets;
+    tabAttendance = TestData.timeTabAttendance;
+    tabProjectInfo = TestData.timeTabProjectInfo;
+    submenuPunchInOut = TestData.timeSubmenuPunchInOut;
+    submenuCustomers = TestData.timeSubmenuCustomers;
+    employeeNameInput = TestData.timeEmployeeNameInput;
+    viewButton = TestData.timeViewButton;
+    attendanceCardTitle = TestData.timeAttendanceCardTitle;
+
+    async clickTimesheetsMenu() {
+        await this.page.locator(this.tabTimesheets).click();
+    }
+
+    async clickAttendanceMenu() {
+        await this.page.locator(this.tabAttendance).click();
+    }
+
+    async selectPunchInOut() {
+        await this.clickAttendanceMenu();
+        await this.page.locator(this.submenuPunchInOut).click();
+    }
+
+    async clickProjectInfoMenu() {
+        await this.page.locator(this.tabProjectInfo).click();
+    }
+
+    async selectCustomers() {
+        await this.clickProjectInfoMenu();
+        await this.page.locator(this.submenuCustomers).click();
+    }
+
+    async fillEmployeeName(name: string) {
+        await this.page.locator(this.employeeNameInput).fill(name);
+    }
+
+    async clickViewTimesheet() {
+        await this.page.locator(this.viewButton).click();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { NavigationPage } from '../Pages/navigationpage';
+import { TimePage } from '../Pages/timepage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM Time Module Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url);
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+
+        let nav = new NavigationPage(page);
+        await nav.clickTime();
+        await expect(page).toHaveURL(new RegExp(TestData.timeUrl));
+    });
+
+    test('1. Verify Time Module Navigation and Header', async ({ page }) => {
+        let time = new TimePage(page);
+        await expect(page).toHaveURL(new RegExp(TestData.timeUrl));
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.timeHeaderText);
+        await expect(page.locator(time.tabTimesheets)).toBeVisible();
+    });
+
+    test('2. Verify Timesheet search input and View button', async ({ page }) => {
+        let time = new TimePage(page);
+        await expect(page.locator(time.employeeNameInput)).toBeVisible();
+        await expect(page.locator(time.viewButton)).toBeVisible();
+    });
+
+    test('3. Navigate to Attendance Punch In/Out', async ({ page }) => {
+        let time = new TimePage(page);
+        await time.selectPunchInOut();
+        await expect(page).toHaveURL(/.*attendance\\/punchIn/);
+        await expect(page.locator(time.attendanceCardTitle)).toBeVisible();
+    });
+
+    test('4. Navigate to Project Info Customers list', async ({ page }) => {
+        let time = new TimePage(page);
+        await time.selectCustomers();
+        await expect(page).toHaveURL(/.*admin\\/viewCustomers/);
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.timeHeaderText);
+    });
+
+    test('5. Verify Required validation on empty Employee Timesheet view', async ({ page }) => {
+        let time = new TimePage(page);
+        await time.clickViewTimesheet();
+        await expect(page.locator(TestData.requiredError).first()).toBeVisible();
+        await expect(page.locator(TestData.requiredError).first()).toContainText(TestData.requiredErrorMessage);
+    });
+});`
+        },
+        recruitment: {
+            title: "5. Recruitment Module - Candidates & Vacancies",
+            url: "/recruitment/viewRecruitmentModule",
+            header: "Recruitment",
+            scenarios: [
+                {
+                    id: "SC-REC-01",
+                    title: "Recruitment Module Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login with valid credentials<br>2. Click 'Recruitment' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /recruitment/viewRecruitmentModule and header displays 'Recruitment'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-REC-02",
+                    title: "Candidates Search Filter Elements Check",
+                    type: "Functional",
+                    steps: "1. Open Recruitment module<br>2. Verify Candidate Name, Keywords inputs, and Search button",
+                    expected: "Search inputs and filter controls are displayed and functional",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-REC-03",
+                    title: "Reset Search Filters in Candidates View",
+                    type: "Functional",
+                    steps: "1. Enter keywords in filter<br>2. Click Reset button<br>3. Verify inputs are cleared",
+                    expected: "Keywords search input is reset back to empty",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-REC-04",
+                    title: "Navigate to Add Candidate Form",
+                    type: "Navigation",
+                    steps: "1. Click '+ Add' button<br>2. Verify navigation to /recruitment/addCandidate<br>3. Verify form fields",
+                    expected: "Add Candidate form with First Name, Last Name, Email, and Save button is visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-REC-05",
+                    title: "Required Validation on Empty Candidate Submission",
+                    type: "Validation",
+                    steps: "1. Go to Add Candidate form<br>2. Click Save without entering mandatory fields<br>3. Verify errors",
+                    expected: "'Required' validation error appears under First Name and Last Name",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Recruitment Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Recruitment")', xpath: "//span[text()='Recruitment']/parent::a", purpose: "Navigates to Recruitment module" },
+                { name: "Recruitment Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Recruitment']", purpose: "Displays 'Recruitment' header" },
+                { name: "Candidates Tab", tag: "<a>", selector: 'a:has-text("Candidates")', xpath: "//a[text()='Candidates']", purpose: "Candidates list tab" },
+                { name: "Vacancies Tab", tag: "<a>", selector: 'a:has-text("Vacancies")', xpath: "//a[text()='Vacancies']", purpose: "Job vacancies list tab" },
+                { name: "Add Candidate Button", tag: "<button>", selector: 'button:has-text("Add")', xpath: "//button[contains(.,'Add')]", purpose: "Opens Add Candidate form" },
+                { name: "Candidate Name Input", tag: "<input>", selector: 'input[placeholder="Type for hints..."]', xpath: "//label[text()='Candidate Name']/parent::div/following-sibling::div//input", purpose: "Filter candidates by name" },
+                { name: "Keywords Input", tag: "<input>", selector: 'input[placeholder="Enter comma separted words..."]', xpath: "//label[text()='Keywords']/parent::div/following-sibling::div//input", purpose: "Filter candidates by skills/keywords" },
+                { name: "Search Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Execute candidate search" },
+                { name: "Reset Button", tag: "<button>", selector: 'button[type="reset"]', xpath: "//button[@type='reset']", purpose: "Reset candidate filters" },
+                { name: "First Name Input", tag: "<input>", selector: 'input[name="firstName"]', xpath: "//input[@name='firstName']", purpose: "Candidate first name" },
+                { name: "Last Name Input", tag: "<input>", selector: 'input[name="lastName"]', xpath: "//input[@name='lastName']", purpose: "Candidate last name" },
+                { name: "Email Input", tag: "<input>", selector: '.oxd-form-row input[placeholder="Type here"]', xpath: "//label[text()='Email']/parent::div/following-sibling::div//input", purpose: "Candidate email address" },
+                { name: "Save Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Save new candidate" }
+            ],
+            pomFile: "Pages/recruitmentpage.ts",
+            specFile: "tests/recruitment.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class RecruitmentPage {
+    constructor(private page: Page) {}
+
+    tabCandidates = TestData.recruitmentTabCandidates;
+    tabVacancies = TestData.recruitmentTabVacancies;
+    addButton = TestData.recruitmentAddButton;
+    candidateNameInput = TestData.recruitmentCandidateNameInput;
+    keywordsInput = TestData.recruitmentKeywordsInput;
+    searchButton = TestData.recruitmentSearchButton;
+    resetButton = TestData.recruitmentResetButton;
+    tableRecords = TestData.recruitmentTableRecords;
+
+    firstNameInput = TestData.recruitmentFirstNameInput;
+    middleNameInput = TestData.recruitmentMiddleNameInput;
+    lastNameInput = TestData.recruitmentLastNameInput;
+    emailInput = TestData.recruitmentEmailInput;
+    saveButton = TestData.recruitmentSaveButton;
+    requiredError = TestData.recruitmentRequiredError;
+
+    async clickCandidatesTab() {
+        await this.page.locator(this.tabCandidates).click();
+    }
+
+    async clickVacanciesTab() {
+        await this.page.locator(this.tabVacancies).click();
+    }
+
+    async clickAddButton() {
+        await this.page.locator(this.addButton).click();
+    }
+
+    async fillKeywords(keywords: string) {
+        await this.page.locator(this.keywordsInput).fill(keywords);
+    }
+
+    async clickSearch() {
+        await this.page.locator(this.searchButton).click();
+    }
+
+    async clickReset() {
+        await this.page.locator(this.resetButton).click();
+    }
+
+    async fillAddCandidateForm(firstName: string, lastName: string, email: string, middleName: string = '') {
+        await this.page.locator(this.firstNameInput).fill(firstName);
+        if (middleName) {
+            await this.page.locator(this.middleNameInput).fill(middleName);
+        }
+        await this.page.locator(this.lastNameInput).fill(lastName);
+        await this.page.locator(this.emailInput).fill(email);
+    }
+
+    async clickSave() {
+        await this.page.locator(this.saveButton).click();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { NavigationPage } from '../Pages/navigationpage';
+import { RecruitmentPage } from '../Pages/recruitmentpage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM Recruitment Module Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url, { waitUntil: 'domcontentloaded' });
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+
+        let nav = new NavigationPage(page);
+        await nav.clickRecruitment();
+        await expect(page).toHaveURL(new RegExp(TestData.recruitmentUrl));
+    });
+
+    test('1. Verify Recruitment Module Navigation and Header', async ({ page }) => {
+        let recruit = new RecruitmentPage(page);
+        await expect(page).toHaveURL(new RegExp(TestData.recruitmentUrl));
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.recruitmentHeaderText);
+        await expect(page.locator(recruit.tabCandidates)).toBeVisible();
+    });
+
+    test('2. Verify Candidates search filter elements', async ({ page }) => {
+        let recruit = new RecruitmentPage(page);
+        await expect(page.locator(recruit.candidateNameInput).first()).toBeVisible();
+        await expect(page.locator(recruit.keywordsInput)).toBeVisible();
+        await expect(page.locator(recruit.searchButton)).toBeVisible();
+    });
+
+    test('3. Reset candidate search filters', async ({ page }) => {
+        let recruit = new RecruitmentPage(page);
+        await recruit.fillKeywords('Automation');
+        await recruit.clickReset();
+        await expect(page.locator(recruit.keywordsInput)).toHaveValue('');
+    });
+
+    test('4. Navigate to Add Candidate form and verify form fields', async ({ page }) => {
+        let recruit = new RecruitmentPage(page);
+        await recruit.clickAddButton();
+        await expect(page).toHaveURL(/.*recruitment\\/addCandidate/);
+        await expect(page.locator(recruit.firstNameInput)).toBeVisible();
+        await expect(page.locator(recruit.lastNameInput)).toBeVisible();
+        await expect(page.locator(recruit.saveButton)).toBeVisible();
+    });
+
+    test('5. Verify Required validation on empty Add Candidate submission', async ({ page }) => {
+        let recruit = new RecruitmentPage(page);
+        await recruit.clickAddButton();
+        await expect(page).toHaveURL(/.*recruitment\\/addCandidate/);
+        await recruit.clickSave();
+        await expect(page.locator(recruit.requiredError).first()).toBeVisible();
+        await expect(page.locator(recruit.requiredError).first()).toContainText(TestData.requiredErrorMessage);
+    });
+});`
+        },
+        myinfo: {
+            title: "6. My Info Module - Personal Details",
+            url: "/pim/viewPersonalDetails",
+            header: "PIM",
+            scenarios: [
+                {
+                    id: "SC-INF-01",
+                    title: "My Info Module Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login with valid credentials<br>2. Click 'My Info' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /pim/viewPersonalDetails and header displays 'PIM'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-INF-02",
+                    title: "Personal Details Name Fields Verification",
+                    type: "Functional",
+                    steps: "1. Open My Info module<br>2. Verify First Name, Middle Name, and Last Name fields",
+                    expected: "All name input fields and the Save button are visible",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-INF-03",
+                    title: "Update Employee Middle Name & Save",
+                    type: "Functional",
+                    steps: "1. Enter updated Middle Name<br>2. Click Save button<br>3. Verify save action completes",
+                    expected: "Save button is clicked and form updates successfully",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-INF-04",
+                    title: "Navigate to Contact Details Tab",
+                    type: "Navigation",
+                    steps: "1. Click 'Contact Details' tab on left navigation list<br>2. Verify URL contains /pim/contactDetails",
+                    expected: "URL redirects to /pim/contactDetails and contact form is shown",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-INF-05",
+                    title: "Required Validation on Clearing First Name",
+                    type: "Validation",
+                    steps: "1. Clear First Name input field<br>2. Click Save button<br>3. Verify validation error",
+                    expected: "'Required' error message is displayed under First Name",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar My Info Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("My Info")', xpath: "//span[text()='My Info']/parent::a", purpose: "Navigates to My Info" },
+                { name: "Personal Details Tab", tag: "<a>", selector: 'a:has-text("Personal Details")', xpath: "//a[text()='Personal Details']", purpose: "Personal details form view" },
+                { name: "Contact Details Tab", tag: "<a>", selector: 'a:has-text("Contact Details")', xpath: "//a[text()='Contact Details']", purpose: "Contact details form view" },
+                { name: "Emergency Contacts Tab", tag: "<a>", selector: 'a:has-text("Emergency Contacts")', xpath: "//a[text()='Emergency Contacts']", purpose: "Emergency contacts list" },
+                { name: "First Name Input", tag: "<input>", selector: 'input[name="firstName"]', xpath: "//input[@name='firstName']", purpose: "Employee first name" },
+                { name: "Middle Name Input", tag: "<input>", selector: 'input[name="middleName"]', xpath: "//input[@name='middleName']", purpose: "Employee middle name" },
+                { name: "Last Name Input", tag: "<input>", selector: 'input[name="lastName"]', xpath: "//input[@name='lastName']", purpose: "Employee last name" },
+                { name: "Nickname Input", tag: "<input>", selector: ".oxd-input", xpath: "//label[text()='Nickname']/parent::div/following-sibling::div//input", purpose: "Employee nickname" },
+                { name: "Save Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Saves personal details form" },
+                { name: "Required Validation Error", tag: "<span>", selector: ".oxd-input-field-error-message", xpath: "//span[contains(@class,'oxd-input-field-error-message')]", purpose: "Displays 'Required' field error" }
+            ],
+            pomFile: "Pages/myinfopage.ts",
+            specFile: "tests/myinfo.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class MyInfoPage {
+    constructor(private page: Page) {}
+
+    tabPersonalDetails = TestData.myInfoTabPersonalDetails;
+    tabContactDetails = TestData.myInfoTabContactDetails;
+    firstNameInput = TestData.myInfoFirstNameInput;
+    middleNameInput = TestData.myInfoMiddleNameInput;
+    lastNameInput = TestData.myInfoLastNameInput;
+    saveButton = TestData.myInfoSaveButton;
+    requiredError = TestData.myInfoRequiredError;
+
+    async clickPersonalDetailsTab() {
+        await this.page.locator(this.tabPersonalDetails).click();
+    }
+
+    async clickContactDetailsTab() {
+        await this.page.locator(this.tabContactDetails).click();
+    }
+
+    async fillFirstName(name: string) {
+        await this.page.locator(this.firstNameInput).fill(name);
+    }
+
+    async fillMiddleName(name: string) {
+        await this.page.locator(this.middleNameInput).fill(name);
+    }
+
+    async fillLastName(name: string) {
+        await this.page.locator(this.lastNameInput).fill(name);
+    }
+
+    async clearFirstName() {
+        await this.page.locator(this.firstNameInput).fill('');
+    }
+
+    async clickSave() {
+        await this.page.locator(this.saveButton).first().click();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { NavigationPage } from '../Pages/navigationpage';
+import { MyInfoPage } from '../Pages/myinfopage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM My Info Module Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url, { waitUntil: 'domcontentloaded' });
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+
+        let nav = new NavigationPage(page);
+        await nav.clickMyInfo();
+        await expect(page).toHaveURL(new RegExp(TestData.myInfoUrl));
+    });
+
+    test('1. Verify My Info Module Navigation and Header', async ({ page }) => {
+        let myInfo = new MyInfoPage(page);
+        await expect(page).toHaveURL(new RegExp(TestData.myInfoUrl));
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.myInfoHeaderText);
+        await expect(page.locator(myInfo.tabPersonalDetails)).toBeVisible();
+    });
+
+    test('2. Verify Personal Details name fields are visible', async ({ page }) => {
+        let myInfo = new MyInfoPage(page);
+        await expect(page.locator(myInfo.firstNameInput)).toBeVisible();
+        await expect(page.locator(myInfo.middleNameInput)).toBeVisible();
+        await expect(page.locator(myInfo.lastNameInput)).toBeVisible();
+        await expect(page.locator(myInfo.saveButton).first()).toBeVisible();
+    });
+
+    test('3. Update employee Middle Name and Save', async ({ page }) => {
+        let myInfo = new MyInfoPage(page);
+        await myInfo.fillMiddleName('Junior');
+        await myInfo.clickSave();
+        await expect(page.locator(myInfo.saveButton).first()).toBeVisible();
+    });
+
+    test('4. Navigate to Contact Details tab', async ({ page }) => {
+        let myInfo = new MyInfoPage(page);
+        await myInfo.clickContactDetailsTab();
+        await expect(page).toHaveURL(/.*pim\\/contactDetails/);
+    });
+
+    test('5. Verify Required validation when clearing First Name', async ({ page }) => {
+        let myInfo = new MyInfoPage(page);
+        await myInfo.clearFirstName();
+        await myInfo.clickSave();
+        await expect(page.locator(myInfo.requiredError).first()).toBeVisible();
+        await expect(page.locator(myInfo.requiredError).first()).toContainText(TestData.requiredErrorMessage);
+    });
+});`
+        },
+        performance: {
+            title: "7. Performance Module - Reviews & Trackers",
+            url: "/performance/viewPerformanceModule",
+            header: "Performance",
+            scenarios: [
+                {
+                    id: "SC-PERF-01",
+                    title: "Performance Navigation & Reviews Check",
+                    type: "Navigation",
+                    steps: "1. Login as Admin<br>2. Click 'Performance' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /performance/viewPerformanceModule and header displays 'Performance'",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Performance Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Performance")', xpath: "//span[text()='Performance']/parent::a", purpose: "Navigates to Performance" },
+                { name: "Performance Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Performance']", purpose: "Displays 'Performance' header" }
+            ],
+            pomFile: "Pages/navigationpage.ts",
+            specFile: "tests/navigation.spec.ts",
+            pomCode: `// In Pages/navigationpage.ts
+async clickPerformance() {
+    await this.page.locator(this.menuPerformance).click();
+}`,
+            specCode: `test('7. Verify Performance Page Navigation and Header', async ({ page }) => {
+    let nav = new NavigationPage(page);
+    await nav.clickPerformance();
+
+    await expect(page).toHaveURL(new RegExp(TestData.performanceUrl));
+    await expect(page.locator(nav.pageHeader)).toContainText(TestData.performanceHeaderText);
+});`
+        },
+        dashboard: {
+            title: "8. Dashboard Module - Home, Widgets & Profile",
+            url: "/dashboard/index",
+            header: "Dashboard",
+            scenarios: [
+                {
+                    id: "SC-DSH-01",
+                    title: "Dashboard Navigation & Header Check",
+                    type: "Navigation",
+                    steps: "1. Login with valid credentials<br>2. Navigate to Dashboard<br>3. Verify URL and header",
+                    expected: "URL contains /dashboard/index and header displays 'Dashboard'",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-DSH-02",
+                    title: "Dashboard Key Widgets Visibility",
+                    type: "Functional",
+                    steps: "1. Load Dashboard page<br>2. Verify 'Time at Work', 'My Actions', 'Quick Launch', 'Buzz Latest Posts', 'Employees on Leave' widgets",
+                    expected: "All 5 core widgets are visible on the dashboard grid",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-DSH-03",
+                    title: "Quick Launch Shortcut Navigation",
+                    type: "Functional",
+                    steps: "1. Click 'Apply Leave' shortcut button in Quick Launch widget<br>2. Verify destination page",
+                    expected: "URL contains /leave/applyLeave and Leave page header is shown",
+                    status: "Automated"
+                },
+                {
+                    id: "SC-DSH-04",
+                    title: "User Profile Dropdown & Logout",
+                    type: "Authentication",
+                    steps: "1. Click user profile dropdown in topbar<br>2. Click 'Logout' link<br>3. Verify redirection",
+                    expected: "User is successfully logged out and redirected to /auth/login",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Dashboard Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Dashboard']", purpose: "Header displaying 'Dashboard'" },
+                { name: "Time at Work Widget", tag: "<div>", selector: '.orangehrm-dashboard-widget:has-text("Time at Work")', xpath: "//p[text()='Time at Work']/ancestor::div[contains(@class,'oxd-sheet')]", purpose: "Time tracking summary card" },
+                { name: "My Actions Widget", tag: "<div>", selector: '.orangehrm-dashboard-widget:has-text("My Actions")', xpath: "//p[text()='My Actions']/ancestor::div[contains(@class,'oxd-sheet')]", purpose: "Pending actions & approvals" },
+                { name: "Quick Launch Widget", tag: "<div>", selector: '.orangehrm-dashboard-widget:has-text("Quick Launch")', xpath: "//p[text()='Quick Launch']/ancestor::div[contains(@class,'oxd-sheet')]", purpose: "Shortcuts grid container" },
+                { name: "Quick Launch Apply Leave", tag: "<button>", selector: 'button[title="Apply Leave"]', xpath: "//button[@title='Apply Leave']", purpose: "Shortcut button to apply leave" },
+                { name: "Buzz Latest Posts Widget", tag: "<div>", selector: '.orangehrm-dashboard-widget:has-text("Buzz Latest Posts")', xpath: "//p[text()='Buzz Latest Posts']/ancestor::div[contains(@class,'oxd-sheet')]", purpose: "Recent social buzz newsfeed" },
+                { name: "Employees on Leave Widget", tag: "<div>", selector: '.orangehrm-dashboard-widget:has-text("Employees on Leave Today")', xpath: "//p[contains(text(),'Leave Today')]/ancestor::div[contains(@class,'oxd-sheet')]", purpose: "On-leave employee list card" },
+                { name: "User Profile Dropdown", tag: "<span>", selector: ".oxd-userdropdown-tab", xpath: "//span[@class='oxd-userdropdown-tab']", purpose: "Profile menu dropdown trigger" },
+                { name: "Dropdown Logout Link", tag: "<a>", selector: 'a:has-text("Logout")', xpath: "//a[text()='Logout']", purpose: "Logs out of active session" }
+            ],
+            pomFile: "Pages/dashboardpage.ts",
+            specFile: "tests/dashboard.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class DashboardPage {
+    constructor(private page: Page) {}
+
+    pageHeader = TestData.dashboardHeader;
+    dashboardGrid = TestData.dashboardGrid;
+    dashboardWidgets = TestData.dashboardWidgets;
+
+    // Widget Locators
+    timeAtWorkWidget = TestData.timeAtWorkWidget;
+    myActionsWidget = TestData.myActionsWidget;
+    quickLaunchWidget = TestData.quickLaunchWidget;
+    buzzLatestPostsWidget = TestData.buzzLatestPostsWidget;
+    employeesOnLeaveWidget = TestData.employeesOnLeaveWidget;
+
+    // Quick Launch Buttons
+    quickLaunchApplyLeave = TestData.quickLaunchApplyLeave;
+    quickLaunchLeaveList = TestData.quickLaunchLeaveList;
+    quickLaunchTimesheets = TestData.quickLaunchTimesheets;
+
+    // User Dropdown
+    userDropdown = TestData.userDropdown;
+    dropdownLogout = TestData.dropdownLogout;
+
+    async openUserDropdown() {
+        await this.page.locator(this.userDropdown).click();
+    }
+
+    async clickLogout() {
+        await this.openUserDropdown();
+        await this.page.locator(this.dropdownLogout).click();
+    }
+
+    async clickApplyLeave() {
+        await this.page.locator(this.quickLaunchApplyLeave).click();
+    }
+}`,
+            specCode: `import { test, expect } from '@playwright/test';
+import { LoginPage } from '../Pages/loginpage';
+import { DashboardPage } from '../Pages/dashboardpage';
+import { TestData } from '../TestData/testdata';
+
+test.describe('OrangeHRM Dashboard Page Tests', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(TestData.url);
+        let loginPage = new LoginPage(page);
+        await loginPage.login(TestData.validUsername, TestData.validPassword);
+        await expect(page).toHaveURL(/.*dashboard/);
+    });
+
+    test('1. Verify Dashboard Page Header and URL', async ({ page }) => {
+        let dashboard = new DashboardPage(page);
+        await expect(page).toHaveURL(new RegExp(TestData.dashboardUrl));
+        await expect(page.locator(dashboard.pageHeader)).toContainText(TestData.dashboardHeaderText);
+    });
+
+    test('2. Verify Key Dashboard Widgets are Visible', async ({ page }) => {
+        let dashboard = new DashboardPage(page);
+        await expect(page.locator(dashboard.timeAtWorkWidget)).toBeVisible();
+        await expect(page.locator(dashboard.myActionsWidget)).toBeVisible();
+        await expect(page.locator(dashboard.quickLaunchWidget)).toBeVisible();
+        await expect(page.locator(dashboard.buzzLatestPostsWidget)).toBeVisible();
+        await expect(page.locator(dashboard.employeesOnLeaveWidget)).toBeVisible();
+    });
+
+    test('3. Verify Quick Launch Apply Leave navigation', async ({ page }) => {
+        let dashboard = new DashboardPage(page);
+        await dashboard.clickApplyLeave();
+        await expect(page).toHaveURL(/.*leave\\/applyLeave/);
+        await expect(page.locator(TestData.pageHeader)).toContainText(TestData.leaveHeaderText);
+    });
+
+    test('4. Verify User Profile Dropdown and Logout', async ({ page }) => {
+        let dashboard = new DashboardPage(page);
+        await dashboard.clickLogout();
+        await expect(page).toHaveURL(/.*auth\\/login/);
+        await expect(page.locator(TestData.usernameInput)).toBeVisible();
+    });
+});`
+        },
+        directory: {
+            title: "9. Directory Module - Employee Directory",
+            url: "/directory/viewDirectory",
+            header: "Directory",
+            scenarios: [
+                {
+                    id: "SC-DIR-01",
+                    title: "Directory Navigation & Search Check",
+                    type: "Navigation",
+                    steps: "1. Login as Admin<br>2. Click 'Directory' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /directory/viewDirectory and header displays 'Directory'",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Directory Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Directory")', xpath: "//span[text()='Directory']/parent::a", purpose: "Navigates to Directory" },
+                { name: "Directory Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Directory']", purpose: "Displays 'Directory' header" }
+            ],
+            pomFile: "Pages/navigationpage.ts",
+            specFile: "tests/navigation.spec.ts",
+            pomCode: `// In Pages/navigationpage.ts
+async clickDirectory() {
+    await this.page.locator(this.menuDirectory).click();
+}`,
+            specCode: `test('9. Verify Directory Page Navigation and Header', async ({ page }) => {
+    let nav = new NavigationPage(page);
+    await nav.clickDirectory();
+
+    await expect(page).toHaveURL(new RegExp(TestData.directoryUrl));
+    await expect(page.locator(nav.pageHeader)).toContainText(TestData.directoryHeaderText);
+});`
+        },
+        maintenance: {
+            title: "10. Maintenance Module - Administrator Access",
+            url: "/maintenance",
+            header: "Administrator Access",
+            scenarios: [
+                {
+                    id: "SC-MNT-01",
+                    title: "Maintenance Access Password Prompt Check",
+                    type: "Security / Navigation",
+                    steps: "1. Login as Admin<br>2. Click 'Maintenance' in sidebar<br>3. Verify URL and Admin Access screen",
+                    expected: "URL contains /maintenance and prompt displays 'Administrator Access'",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Maintenance Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Maintenance")', xpath: "//span[text()='Maintenance']/parent::a", purpose: "Navigates to Maintenance" },
+                { name: "Admin Access Title", tag: "<h6>", selector: "h6.orangehrm-admin-access-title", xpath: "//h6[contains(.,'Administrator Access')]", purpose: "Maintenance password modal title" },
+                { name: "Password Input", tag: "<input>", selector: 'input[name="password"]', xpath: "//input[@name='password']", purpose: "Enter admin password to verify access" },
+                { name: "Confirm Button", tag: "<button>", selector: 'button[type="submit"]', xpath: "//button[@type='submit']", purpose: "Confirm password" },
+                { name: "Cancel Button", tag: "<button>", selector: 'button:has-text("Cancel")', xpath: "//button[contains(.,'Cancel')]", purpose: "Cancel prompt and return" }
+            ],
+            pomFile: "Pages/maintenancepage.ts",
+            specFile: "tests/navigation.spec.ts",
+            pomCode: `import { Page } from '@playwright/test';
+import { TestData } from '../TestData/testdata';
+
+export class MaintenancePage {
+    constructor(private page: Page) {}
+
+    passwordInput = TestData.maintenancePasswordInput;
+    confirmButton = TestData.maintenanceConfirmButton;
+    cancelButton = TestData.maintenanceCancelButton;
+    promptHeader = TestData.maintenancePromptHeader;
+
+    async enterPassword(password: string) {
+        await this.page.locator(this.passwordInput).fill(password);
+    }
+
+    async clickConfirm() {
+        await this.page.locator(this.confirmButton).click();
+    }
+
+    async clickCancel() {
+        await this.page.locator(this.cancelButton).click();
+    }
+}`,
+            specCode: `test('10. Verify Maintenance Page Navigation and Admin Access Prompt', async ({ page }) => {
+    let nav = new NavigationPage(page);
+    await nav.clickMaintenance();
+
+    await expect(page).toHaveURL(new RegExp(TestData.maintenanceUrl));
+    await expect(page.locator(TestData.maintenancePromptHeader)).toContainText(TestData.maintenanceHeaderText);
+});`
+        },
+        claim: {
+            title: "11. Claim Module - Employee Claims",
+            url: "/claim/viewClaimModule",
+            header: "Claim",
+            scenarios: [
+                {
+                    id: "SC-CLM-01",
+                    title: "Claim Navigation & Claims List Check",
+                    type: "Navigation",
+                    steps: "1. Login as Admin<br>2. Click 'Claim' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /claim/viewClaimModule and header displays 'Claim'",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Claim Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Claim")', xpath: "//span[text()='Claim']/parent::a", purpose: "Navigates to Claim module" },
+                { name: "Claim Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Claim']", purpose: "Displays 'Claim' header" }
+            ],
+            pomFile: "Pages/navigationpage.ts",
+            specFile: "tests/navigation.spec.ts",
+            pomCode: `// In Pages/navigationpage.ts
+async clickClaim() {
+    await this.page.locator(this.menuClaim).click();
+}`,
+            specCode: `test('11. Verify Claim Page Navigation and Header', async ({ page }) => {
+    let nav = new NavigationPage(page);
+    await nav.clickClaim();
+
+    await expect(page).toHaveURL(new RegExp(TestData.claimUrl));
+    await expect(page.locator(nav.pageHeader)).toContainText(TestData.claimHeaderText);
+});`
+        },
+        buzz: {
+            title: "12. Buzz Module - Social Feed & Posts",
+            url: "/buzz/viewBuzz",
+            header: "Buzz",
+            scenarios: [
+                {
+                    id: "SC-BZZ-01",
+                    title: "Buzz Navigation & Newsfeed Check",
+                    type: "Navigation",
+                    steps: "1. Login as Admin<br>2. Click 'Buzz' in sidebar<br>3. Verify URL and header",
+                    expected: "URL contains /buzz/viewBuzz and header displays 'Buzz'",
+                    status: "Automated"
+                }
+            ],
+            locators: [
+                { name: "Sidebar Buzz Menu", tag: "<a>, <span>", selector: 'a.oxd-main-menu-item:has-text("Buzz")', xpath: "//span[text()='Buzz']/parent::a", purpose: "Navigates to Buzz module" },
+                { name: "Buzz Header", tag: "<h6>", selector: "h6.oxd-topbar-header-breadcrumb-module", xpath: "//h6[text()='Buzz']", purpose: "Displays 'Buzz' header" }
+            ],
+            pomFile: "Pages/navigationpage.ts",
+            specFile: "tests/navigation.spec.ts",
+            pomCode: `// In Pages/navigationpage.ts
+async clickBuzz() {
+    await this.page.locator(this.menuBuzz).click();
+}`,
+            specCode: `test('12. Verify Buzz Page Navigation and Header', async ({ page }) => {
+    let nav = new NavigationPage(page);
+    await nav.clickBuzz();
+
+    await expect(page).toHaveURL(new RegExp(TestData.buzzUrl));
+    await expect(page.locator(nav.pageHeader)).toContainText(TestData.buzzHeaderText);
+});`
+        }
+    };
+
+    const commonTestDataCode = `export const TestData = {
+    url: 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login',
+    validUsername: 'Admin',
+    validPassword: 'admin123',
+
+    // 12 Sidebar Menu Locators
+    menuAdmin: 'a.oxd-main-menu-item:has-text("Admin")',
+    menuPim: 'a.oxd-main-menu-item:has-text("PIM")',
+    menuLeave: 'a.oxd-main-menu-item:has-text("Leave")',
+    menuTime: 'a.oxd-main-menu-item:has-text("Time")',
+    menuRecruitment: 'a.oxd-main-menu-item:has-text("Recruitment")',
+    menuMyInfo: 'a.oxd-main-menu-item:has-text("My Info")',
+    menuPerformance: 'a.oxd-main-menu-item:has-text("Performance")',
+    menuDashboard: 'a.oxd-main-menu-item:has-text("Dashboard")',
+    menuDirectory: 'a.oxd-main-menu-item:has-text("Directory")',
+    menuMaintenance: 'a.oxd-main-menu-item:has-text("Maintenance")',
+    menuClaim: 'a.oxd-main-menu-item:has-text("Claim")',
+    menuBuzz: 'a.oxd-main-menu-item:has-text("Buzz")',
+
+    // Header Locator
+    pageHeader: 'h6.oxd-topbar-header-breadcrumb-module',
+
+    // Expected URLs
+    adminUrl: '/admin/viewAdminModule',
+    pimUrl: '/pim/viewPimModule',
+    leaveUrl: '/leave/viewLeaveModule',
+    timeUrl: '/time/viewTimeModule',
+    recruitmentUrl: '/recruitment/viewRecruitmentModule',
+    myInfoUrl: '/pim/viewPersonalDetails',
+    performanceUrl: '/performance/viewPerformanceModule',
+    dashboardUrl: '/dashboard/index',
+    directoryUrl: '/directory/viewDirectory',
+    maintenanceUrl: '/maintenance',
+    claimUrl: '/claim/viewClaimModule',
+    buzzUrl: '/buzz/viewBuzz'
+};`;
+
+    let currentModuleKey = 'admin';
+    let currentView = 'scenarios';
+    let currentCodeTab = 'pom';
+
+    function renderModule() {
+        const mod = modulesData[currentModuleKey];
+        document.getElementById('currentModuleTitle').innerText = mod.title;
+
+        // Render Scenarios Table
+        let scHtml = \`<thead>
+            <tr>
+                <th style="width: 110px;">ID</th>
+                <th style="width: 220px;">Scenario Name</th>
+                <th style="width: 110px;">Type</th>
+                <th>Test Steps</th>
+                <th>Expected Result</th>
+                <th style="width: 110px;">Status</th>
+            </tr>
+        </thead><tbody>\`;
+
+        mod.scenarios.forEach(s => {
+            scHtml += \`<tr>
+                <td><span class="tag-scenario">\${s.id}</span></td>
+                <td><strong>\${s.title}</strong></td>
+                <td><span class="code-pill">\${s.type}</span></td>
+                <td>\${s.steps}</td>
+                <td>\${s.expected}</td>
+                <td><span class="tag-status">\${s.status}</span></td>
+            </tr>\`;
+        });
+        scHtml += '</tbody>';
+        document.getElementById('scenariosTable').innerHTML = scHtml;
+
+        // Render Locators Table
+        let locHtml = \`<thead>
+            <tr>
+                <th>Element Name</th>
+                <th>HTML Tag</th>
+                <th>Playwright CSS Selector</th>
+                <th>XPath Alternative</th>
+                <th>Purpose</th>
+            </tr>
+        </thead><tbody>\`;
+
+        mod.locators.forEach(l => {
+            locHtml += \`<tr>
+                <td><strong>\${l.name}</strong></td>
+                <td><span class="code-pill">\${l.tag}</span></td>
+                <td><span class="code-pill">\${l.selector}</span></td>
+                <td><span class="code-pill">\${l.xpath}</span></td>
+                <td>\${l.purpose}</td>
+            </tr>\`;
+        });
+        locHtml += '</tbody>';
+        document.getElementById('locatorsTable').innerHTML = locHtml;
+
+        renderCode();
+    }
+
+    function renderCode() {
+        const mod = modulesData[currentModuleKey];
+        const filePath = document.getElementById('codeFilePath');
+        const content = document.getElementById('codeContent');
+
+        if (currentCodeTab === 'pom') {
+            filePath.innerText = mod.pomFile;
+            content.textContent = mod.pomCode;
+        } else if (currentCodeTab === 'spec') {
+            filePath.innerText = mod.specFile;
+            content.textContent = mod.specCode;
+        } else {
+            filePath.innerText = "TestData/testdata.ts";
+            content.textContent = commonTestDataCode;
+        }
+    }
+
+    function switchModule(key) {
+        currentModuleKey = key;
+        const buttons = document.querySelectorAll('.module-tab-btn');
+        buttons.forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        renderModule();
+    }
+
+    function switchView(viewName) {
+        currentView = viewName;
+        document.getElementById('viewScenarios').style.display = viewName === 'scenarios' ? 'block' : 'none';
+        document.getElementById('viewHtmlModel').style.display = viewName === 'htmlmodel' ? 'block' : 'none';
+        document.getElementById('viewSrc').style.display = viewName === 'src' ? 'block' : 'none';
+
+        const buttons = document.querySelectorAll('.section-header .sub-tab-btn');
+        buttons.forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    function switchCodeTab(tab) {
+        currentCodeTab = tab;
+        document.querySelectorAll('#viewSrc .sub-tab-btn').forEach(b => b.classList.remove('active'));
+        if (tab === 'pom') document.getElementById('btnCodePom').classList.add('active');
+        if (tab === 'spec') document.getElementById('btnCodeSpec').classList.add('active');
+        if (tab === 'data') document.getElementById('btnCodeData').classList.add('active');
+        renderCode();
+    }
+
+    function copyCode() {
+        const text = document.getElementById('codeContent').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            const original = btn.innerText;
+            btn.innerText = 'Copied!';
+            setTimeout(() => { btn.innerText = original; }, 2000);
+        });
+    }
+
+    // Initialize first load
+    renderModule();
+</script>
+
+</body>
+</html>
